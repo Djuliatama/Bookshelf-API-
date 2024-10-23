@@ -1,4 +1,3 @@
-const { read } = require('fs');
 const { nanoid } = require('nanoid');         
 
 let books = []; 
@@ -145,9 +144,28 @@ const updateById = (req, res) => {
     });
 };
 
+const deleteById = (res, req) => {
+    const { bookId } = req.params;
+    const book = allBooks.findIndex(book => book.id === bookId);
+    if(!bookId) {
+        return res.status(404).json({
+            status: "fail",
+            message: "Buku gagal dihapus. Id tidak ditemukan"
+        });
+    } 
+    
+    allBooks.splice(book, 1);
+
+    return res.status(200).json({
+        status: "success",
+        message: "Buku berhasil dihapus"
+    });
+};
+
 module.exports = {
     createBook,
     getAllBooks,
     getById,
     updateById,
+    deleteById,
 }
