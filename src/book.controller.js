@@ -115,17 +115,21 @@ const updateById = (req, res) => {
         });
     }
     
-    const bookExist = allBooks.find(book => book.id === bookId);
-    if (!bookExist) {
+    const book = allBooks.findIndex(book => book.id === bookId);
+
+    console.log("Book ID dari params:", bookId);
+    console.log("Id yang avail:", allBooks.map(book => book.id));
+
+
+    if (!book) {
         return res.status(400).json({
             status: "fail",
             message: "Gagal memperbarui buku. Id tidak ditemukan"
         });
     }
 
-    allBooks = allBooks.map(book => 
-        book.id === bookId ? {
-            ...book, 
+    allBooks[book] = {
+            ...allBooks[book], 
             name,
             year,
             author,
@@ -135,8 +139,7 @@ const updateById = (req, res) => {
             readPage,
             reading,
             updatedAt: new Date().toISOString()
-        } : book
-    );
+        };
 
     return res.status(200).json({
         status: "success",
@@ -144,10 +147,10 @@ const updateById = (req, res) => {
     });
 };
 
-const deleteById = (res, req) => {
+const deleteById = (req, res) => {
     const { bookId } = req.params;
     const book = allBooks.findIndex(book => book.id === bookId);
-    if(!bookId) {
+    if(!book) {
         return res.status(404).json({
             status: "fail",
             message: "Buku gagal dihapus. Id tidak ditemukan"
